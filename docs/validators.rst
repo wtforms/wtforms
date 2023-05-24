@@ -57,6 +57,48 @@ Built-in validators
 
 .. autoclass:: wtforms.validators.NumberRange
 
+.. autoclass:: wtforms.validators.DateRange
+
+    This validator can be used with a custom callback to make it somewhat dynamic::
+
+        from datetime import date
+        from datetime import datetime
+        from datetime import timedelta
+        from functools import partial
+
+        from wtforms import Form
+        from wtforms.fields import DateField
+        from wtforms.fields import DateTimeLocalField
+        from wtforms.validators import DateRange
+
+
+        def in_n_days(days):
+            return datetime.now() + timedelta(days=days)
+
+
+        cb = partial(in_n_days, 5)
+
+
+        class DateForm(Form):
+            date = DateField("date", [DateRange(min=date(2023, 1, 1), max_callback=cb)])
+            datetime = DateTimeLocalField(
+                "datetime-local",
+                [
+                    DateRange(
+                        min=datetime(2023, 1, 1, 15, 30),
+                        max_callback=cb,
+                        input_type="datetime-local",
+                    )
+                ],
+            )
+
+    In the example, we use the DateRange validator to prevent a date outside of a
+    specified range. for the field ``date`` we set the minimum range statically,
+    but the date must not be newer than the current time + 5 days. For the field
+    ``datetime`` we do the same, but specify an input_type to achieve the correct
+    formatting for the corresponding field type.
+
+
 .. autoclass:: wtforms.validators.Optional
 
    This also sets the ``optional`` :attr:`flag <wtforms.fields.Field.flags>` on
