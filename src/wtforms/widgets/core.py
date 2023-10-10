@@ -161,7 +161,6 @@ class Input:
     """
 
     html_params = staticmethod(html_params)
-    validation_attrs = ["required", "disabled"]
 
     def __init__(self, input_type=None):
         if input_type is not None:
@@ -229,6 +228,7 @@ class HiddenInput(Input):
     """
 
     input_type = "hidden"
+    validation_attrs = ["disabled"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -243,6 +243,7 @@ class CheckboxInput(Input):
     """
 
     input_type = "checkbox"
+    validation_attrs = ["required", "disabled"]
 
     def __call__(self, field, **kwargs):
         if getattr(field, "checked", field.data):
@@ -259,6 +260,7 @@ class RadioInput(Input):
     """
 
     input_type = "radio"
+    validation_attrs = ["required", "disabled"]
 
     def __call__(self, field, **kwargs):
         if field.checked:
@@ -298,6 +300,7 @@ class SubmitInput(Input):
     """
 
     input_type = "submit"
+    validation_attrs = ["required", "disabled"]
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault("value", field.label.text)
@@ -540,7 +543,7 @@ class RangeInput(Input):
     """
 
     input_type = "range"
-    validation_attrs = ["required", "disabled", "max", "min", "step"]
+    validation_attrs = ["disabled", "max", "min", "step"]
 
     def __init__(self, step=None):
         self.step = step
@@ -557,3 +560,4 @@ class ColorInput(Input):
     """
 
     input_type = "color"
+    validation_attrs = ["disabled"]
