@@ -20,3 +20,18 @@ def test_none_of_raises(dummy_form, dummy_field):
     validator = NoneOf(["a", "b", "c"])
     with pytest.raises(ValueError):
         validator(dummy_form, dummy_field)
+
+
+def test_none_of_multiple_values(dummy_form, dummy_field):
+    """
+    the validator should work with multiple values like produced
+    by SelectMultiple fields
+    """
+    dummy_field.data = ["d", "e"]
+    validator = NoneOf(["a", "b", "c"])
+    validator(dummy_form, dummy_field)
+
+    dummy_field.data = ["a", "e"]
+    validator = NoneOf(["a", "b", "c"])
+    with pytest.raises(ValueError):
+        validator(dummy_form, dummy_field)

@@ -39,3 +39,18 @@ def test_any_of_values_formatter(dummy_form, dummy_field):
         validator(dummy_form, dummy_field)
 
     assert str(e.value) == "test 9::8::7"
+
+
+def test_none_multiple_values(dummy_form, dummy_field):
+    """
+    the validator should work with multiple values like produced
+    by SelectMultiple fields
+    """
+    dummy_field.data = ["a", "e"]
+    validator = AnyOf(["a", "b", "c"])
+    validator(dummy_form, dummy_field)
+
+    dummy_field.data = ["d", "e"]
+    validator = AnyOf(["a", "b", "c"])
+    with pytest.raises(ValueError):
+        validator(dummy_form, dummy_field)

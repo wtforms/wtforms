@@ -5,6 +5,9 @@ Version 3.x.x
 
 Unreleased
 
+- :class:`~wtforms.validators.NoneOf` and :class:`~wtforms.validators.AnyOf`
+  can validate multiple valued fields like :class:`~fields.SelectMultipleField`
+  :pr:`538` :pr:`807`
 - Display :class:`~wtforms.Flags` values in their repr
 
 Version 3.1.0

@@ -586,7 +586,8 @@ class AnyOf:
         self.values_formatter = values_formatter
 
     def __call__(self, form, field):
-        if field.data in self.values:
+        data = field.data if isinstance(field.data, list) else [field.data]
+        if any(d in self.values for d in data):
             return
 
         message = self.message
@@ -621,7 +622,8 @@ class NoneOf:
         self.values_formatter = values_formatter
 
     def __call__(self, form, field):
-        if field.data not in self.values:
+        data = field.data if isinstance(field.data, list) else [field.data]
+        if not any(d in self.values for d in data):
             return
 
         message = self.message
