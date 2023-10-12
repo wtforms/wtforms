@@ -6,6 +6,9 @@ Version 3.x.x
 Unreleased
 
 - Display :class:`~wtforms.Flags` values in their repr. :pr:`808`
+- Removed `required` flag support from :class:`~fields.HiddenWidget`,
+  :class:`~fields.RangeWidget` and :class:`~fields.SelectWidget` to
+  conform to W3C :pr:`810`
 
 Version 3.1.0
 -------------
