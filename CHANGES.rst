@@ -41,6 +41,7 @@ Released 2023-10-10
 -   Python 3.11 support :pr:`763`
 -   Added shorter format to :class:`~fields.DateTimeLocalField`
     defaults :pr:`761`
+-   Fixed UUID validation :pr:`769`
 -   Stop support for python 3.7 :pr:`794`
 -   Added shorter format to :class:`~fields.WeekField`
     defaults :pr:`765`
