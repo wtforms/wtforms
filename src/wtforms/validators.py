@@ -2,6 +2,7 @@ import ipaddress
 import math
 import re
 import uuid
+from urllib.parse import urlparse
 
 __all__ = (
     "DataRequired",
@@ -505,9 +506,9 @@ class MacAddress(Regexp):
         super().__call__(form, field, message)
 
 
-class URL(Regexp):
+class URL:
     """
-    Simple regexp based url validation. Much like the email validator, you
+    Simple url validation. Much like the email validator, you
     probably want to validate the url later by other means if the url must
     resolve.
 
@@ -522,14 +523,7 @@ class URL(Regexp):
     """
 
     def __init__(self, require_tld=True, allow_ip=True, message=None):
-        regex = (
-            r"^[a-z]+://"
-            r"(?P<host>[^\/\?:]+)"
-            r"(?P<port>:[0-9]+)?"
-            r"(?P<path>\/.*?)?"
-            r"(?P<query>\?.*)?$"
-        )
-        super().__init__(regex, re.IGNORECASE, message)
+        self.message = message
         self.validate_hostname = HostnameValidation(
             require_tld=require_tld, allow_ip=allow_ip
         )
@@ -539,8 +533,18 @@ class URL(Regexp):
         if message is None:
             message = field.gettext("Invalid URL.")
 
-        match = super().__call__(form, field, message)
-        if not self.validate_hostname(match.group("host")):
+        try:
+            r = urlparse(field.data)
+        except ValueError as exc:
+            raise ValidationError(message) from exc
+
+        if not r.scheme:
+            raise ValidationError(message)
+
+        if not r.hostname:
+            raise ValidationError(message)
+
+        if not self.validate_hostname(r.hostname):
             raise ValidationError(message)
 
 

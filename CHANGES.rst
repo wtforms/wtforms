@@ -1,5 +1,13 @@
 .. currentmodule:: wtforms
 
+Version 3.X.X
+-------------
+
+Unreleased
+
+- :class:`~validators.URL` validator is based on `urllib.urlparse` and
+  allows `username:password@` values.
+
 Version 3.1.2
 -------------
 

@@ -22,6 +22,10 @@ from wtforms.validators import ValidationError
         "\u0625\u062e\u062a\u0628\u0627\u0631/foo.com",  # Arabic
         "http://उदाहरण.परीक्षा/",  # Hindi
         "http://실례.테스트",  # Hangul
+        "http://username:password@foobar.dk",
+        "http://username@foobar.dk",
+        "http://usern@me:p@ssword@foobar.dk",
+        "http://username:password@foobar.dk:1234/path?query=parm",
     ],
 )
 def test_valid_url_passes(url_val, dummy_form, dummy_field):
@@ -42,6 +46,7 @@ def test_valid_url_passes(url_val, dummy_form, dummy_field):
         "http://foobar:5000?query=param&foo=faa",
         "http://foobar/path?query=param&foo=faa",
         "http://foobar:1234/path?query=param&foo=faa",
+        "http://user:password@foobar:1234/path?query=param&foo=faa",
     ],
 )
 def test_valid_url_notld_passes(url_val, dummy_form, dummy_field):
