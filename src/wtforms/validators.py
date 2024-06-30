@@ -559,9 +559,11 @@ class UUID:
         message = self.message
         if message is None:
             message = field.gettext("Invalid UUID.")
+        if isinstance(field.data, uuid.UUID):
+            return
         try:
             uuid.UUID(field.data)
-        except ValueError as exc:
+        except (ValueError, TypeError) as exc:
             raise ValidationError(message) from exc
 
 
