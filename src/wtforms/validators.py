@@ -248,9 +248,9 @@ class Optional:
 
     def __call__(self, form, field):
         if (
-            not field.raw_data
-            or isinstance(field.raw_data[0], str)
-            and not self.string_check(field.raw_data[0])
+            not field.data
+            or isinstance(field.data, str)
+            and not self.string_check(field.data)
         ):
             field.errors[:] = []
             raise StopValidation()

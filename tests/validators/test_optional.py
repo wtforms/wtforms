@@ -37,3 +37,19 @@ def test_input_optional_raises(data_v, raw_data_v, dummy_form, dummy_field):
         validator(dummy_form, dummy_field)
 
     assert len(dummy_field.errors) == 0
+
+
+def test_input_optional_raises_with_empty_formdata(dummy_form, dummy_field):
+    """
+    optional should not stop the validation chain if field.data is not empty
+    """
+    validator = optional()
+    dummy_field.data = "abc"
+    dummy_field.raw_data = None
+
+    dummy_field.errors = ["Invalid Integer Value"]
+    assert len(dummy_field.errors) == 1
+
+    validator(dummy_form, dummy_field)
+
+    assert len(dummy_field.errors) == 1
