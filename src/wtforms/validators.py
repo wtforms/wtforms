@@ -2,6 +2,8 @@ import ipaddress
 import math
 import re
 import uuid
+from datetime import date
+from datetime import datetime
 
 __all__ = (
     "DataRequired",
@@ -17,6 +19,7 @@ __all__ = (
     "Length",
     "length",
     "NumberRange",
+    "DateRange",
     "number_range",
     "Optional",
     "optional",
@@ -220,6 +223,110 @@ class NumberRange:
 
         else:
             message = field.gettext("Number must be between %(min)s and %(max)s.")
+
+        raise ValidationError(message % dict(min=self.min, max=self.max))
+
+
+class DateRange:
+    """
+    Validates that a date or datetime is of a minimum and/or maximum value,
+    inclusive. This will work with dates and datetimes.
+
+    :param min:
+        The minimum required date or datetime. If not provided, minimum
+        date or datetime will not be checked.
+    :param max:
+        The maximum date or datetime. If not provided, maximum date or datetime
+        will not be checked.
+    :param message:
+        Error message to raise in case of a validation error. Can be
+        interpolated using `%(min)s` and `%(max)s` if desired. Useful defaults
+        are provided depending on the existence of min and max.
+    :param input_type:
+        The type of field to check. Either ``datetime-local`` or ``date``. If
+        ``datetime-local`` the attributes (``min``, ``max``) are set using the
+        ``YYYY-MM-DDThh:mm`` format, if ``date`` (the default), ``yyyy-mm-dd``
+        is used.
+    :param min_callback:
+        dynamically set the minimum date or datetime based on the return value of
+        a function. The specified function must not take any arguments.
+    :param max_callback:
+        dynamically set the maximum date or datetime based on the return value of
+        a function. The specified function must not take any arguments.
+
+    When supported, sets the `min` and `max` attributes on widgets.
+    """
+
+    def __init__(
+        self,
+        min=None,
+        max=None,
+        message=None,
+        input_type="date",
+        min_callback=None,
+        max_callback=None,
+    ):
+        if min and min_callback:
+            raise ValueError("You can only specify one of min or min_callback.")
+
+        if max and max_callback:
+            raise ValueError("You can only specify one of max or max_callback.")
+
+        if input_type not in ("datetime-local", "date"):
+            raise ValueError(
+                f"Only datetime-local or date are allowed, not {input_type!r}"
+            )
+
+        self.min = min
+        self.max = max
+        self.message = message
+        self.min_callback = min_callback
+        self.max_callback = max_callback
+        self.field_flags = {}
+        if input_type == "date":
+            fmt = "%Y-%m-%d"
+        else:
+            fmt = "%Y-%m-%dT%H:%M"
+
+        if self.min is not None:
+            self.field_flags["min"] = self.min.strftime(fmt)
+        if self.max is not None:
+            self.field_flags["max"] = self.max.strftime(fmt)
+
+    def __call__(self, form, field):
+        if self.min_callback is not None:
+            self.min = self.min_callback()
+
+        if self.max_callback is not None:
+            self.max = self.max_callback()
+
+        if isinstance(self.min, date):
+            self.min = datetime(*self.min.timetuple()[:5])
+
+        if isinstance(self.max, date):
+            self.max = datetime(*self.max.timetuple()[:5])
+
+        data = field.data
+        if data is not None:
+            if isinstance(data, date):
+                data = datetime(*data.timetuple()[:5])
+
+            if (self.min is None or data >= self.min) and (
+                self.max is None or data <= self.max
+            ):
+                return
+
+        if self.message is not None:
+            message = self.message
+
+        elif self.max is None:
+            message = field.gettext("Date must be at least %(min)s.")
+
+        elif self.min is None:
+            message = field.gettext("Date must be at most %(max)s.")
+
+        else:
+            message = field.gettext("Date must be between %(min)s and %(max)s.")
 
         raise ValidationError(message % dict(min=self.min, max=self.max))
 
@@ -721,6 +828,7 @@ ip_address = IPAddress
 mac_address = MacAddress
 length = Length
 number_range = NumberRange
+date_range = DateRange
 optional = Optional
 input_required = InputRequired
 data_required = DataRequired
