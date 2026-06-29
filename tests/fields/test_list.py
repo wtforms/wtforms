@@ -6,6 +6,7 @@ from tests.common import DummyPostData
 from wtforms import validators
 from wtforms.fields import FieldList
 from wtforms.fields import FormField
+from wtforms.fields import SelectField
 from wtforms.fields import StringField
 from wtforms.form import Form
 from wtforms.meta import DefaultMeta
@@ -409,3 +410,41 @@ def test_formdata_with_sparse_indices_keeps_entry_obj_alignment():
     assert user.addresses[1].street == "C street updated"
     assert a1 not in user.addresses
     assert a1.street == "B street"
+
+
+def test_append_entry_runs_choices_callback():
+    """A SelectField choices callable nested in a FormField entry must be
+    evaluated when the entry is added via append_entry, just as it would be
+    during the form's normal processing cycle. The callable is invoked in
+    SelectField.post_process, so append_entry must trigger it."""
+
+    def get_choices(form, field):
+        return [("a", "A"), ("b", "B")]
+
+    class Inner(Form):
+        sel = SelectField(choices=get_choices)
+
+    F = make_form(items=FieldList(FormField(Inner)))
+    html = F().items.append_entry().sel()
+
+    assert '<option value="a">A</option>' in html
+    assert '<option value="b">B</option>' in html
+
+
+def test_insert_entry_runs_choices_callback():
+    """Same as append_entry, but the entry is created via insert_entry. The
+    callable is invoked after the renumbering, so the rendered field carries
+    the compacted name."""
+
+    def get_choices(form, field):
+        return [("a", "A"), ("b", "B")]
+
+    class Inner(Form):
+        sel = SelectField(choices=get_choices)
+
+    F = make_form(items=FieldList(FormField(Inner)))
+    html = F().items.insert_entry(0).sel()
+
+    assert 'name="items-0-sel"' in html
+    assert '<option value="a">A</option>' in html
+    assert '<option value="b">B</option>' in html

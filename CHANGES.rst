@@ -7,6 +7,11 @@ Unreleased
 
 - :class:`~datalist.DataList` ``choices`` accepts the shorthand
   ``{value: label}`` dict syntax. :issue:`886`
+- ``choices`` callables on fields nested in a :class:`~fields.FieldList` are
+  now evaluated when entries are added via
+  :meth:`~fields.FieldList.append_entry` or
+  :meth:`~fields.FieldList.insert_entry`, which now run ``post_process`` on the
+  new entry.
 
 Version 3.3.0b3
 ---------------

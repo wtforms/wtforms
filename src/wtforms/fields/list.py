@@ -231,7 +231,9 @@ class FieldList(Field):
         Entries added in this way will *not* receive formdata however, and can
         only receive object data.
         """
-        return self._add_entry(data=data)
+        field = self._add_entry(data=data)
+        field.post_process()
+        return field
 
     def insert_entry(self, index, data=unset_value):
         """
@@ -247,6 +249,7 @@ class FieldList(Field):
         field = self._add_entry(data=data)
         self.entries.insert(index, self.entries.pop())
         self._compact_indices()
+        field.post_process()
         return field
 
     def pop_entry(self, index=-1):
