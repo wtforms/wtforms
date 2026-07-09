@@ -27,7 +27,7 @@ def test_anyof_raisses(test_v, test_list, dummy_form, dummy_field):
 
 def test_any_of_values_formatter(dummy_form, dummy_field):
     """
-    Test AnyOf values_formatter formating of error message
+    Test AnyOf values_formatter formatting of error message
     """
 
     def formatter(values):

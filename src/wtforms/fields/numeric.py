@@ -104,7 +104,7 @@ class DecimalField(LocaleAwareNumberField):
     :param places:
         How many decimal places to quantize the value to for display on form.
         If unset, use 2 decimal places.
-        If explicitely set to `None`, does not quantize value.
+        If explicitly set to `None`, does not quantize value.
     :param rounding:
         How to round the value during quantize, for example
         `decimal.ROUND_UP`. If unset, uses the rounding value from the
