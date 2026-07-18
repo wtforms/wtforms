@@ -38,3 +38,14 @@ def test_invalid_value_message():
     form = G(DummyPostData(a=["bogus"]))
     assert not form.validate()
     assert form.a.errors == ["Enter a date as YYYY-MM-DD."]
+
+
+def test_initial_string_data_renders():
+    form = F(data={"a": "2020-01-02"})
+    assert form.a.data == "2020-01-02"
+    assert form.a._value() == "2020-01-02"
+
+
+def test_initial_non_date_obj_attribute_renders():
+    form = F(obj=type("O", (), {"a": "not-a-date"})())
+    assert form.a._value() == "not-a-date"

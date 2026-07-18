@@ -139,3 +139,11 @@ def test_tz_naive_data_rendered_unchanged():
     F = make_form(a=DateTimeLocalField(tz=paris))
     form = F(a=datetime(2026, 5, 6, 16, 0))
     assert form.a._value() == "2026-05-06 16:00:00"
+
+
+def test_initial_string_data_renders():
+    class G(Form):
+        a = DateTimeLocalField()
+
+    form = G(data={"a": "2020-01-02T03:04"})
+    assert form.a._value() == "2020-01-02T03:04"

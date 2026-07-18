@@ -5,6 +5,10 @@ Version 3.3.0b4
 
 Unreleased
 
+- :meth:`~fields.DateTimeField._value` and
+  :meth:`~fields.DateTimeLocalField._value` render plain string ``data`` /
+  ``obj`` values instead of raising ``AttributeError``.
+
 - :class:`~datalist.DataList` ``choices`` accepts the shorthand
   ``{value: label}`` dict syntax. :issue:`886`
 - ``choices`` callables on fields nested in a :class:`~fields.FieldList` are

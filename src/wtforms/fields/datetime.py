@@ -57,8 +57,13 @@ class DateTimeField(Field):
     def _value(self):
         if self.raw_data:
             return " ".join(self.raw_data)
+        if not self.data:
+            return ""
         format = self.format[0]
-        return self.data and self.data.strftime(format) or ""
+        # data=/obj may supply a plain string; still render for the widget.
+        if not hasattr(self.data, "strftime"):
+            return str(self.data)
+        return self.data.strftime(format)
 
     def process_formdata(self, valuelist):
         if not valuelist:
@@ -279,8 +284,10 @@ class DateTimeLocalField(DateTimeField):
             return ""
 
         value = self.data
+        if not hasattr(value, "strftime"):
+            return str(value)
         tz = self._resolve_tz()
-        if tz is not None and value.tzinfo is not None:
+        if tz is not None and getattr(value, "tzinfo", None) is not None:
             value = value.astimezone(tz).replace(tzinfo=None)
 
         return value.strftime(self.format[0])
