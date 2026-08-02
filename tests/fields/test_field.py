@@ -47,6 +47,14 @@ def test_process_formdata():
     assert field.data == 42
 
 
+def test_errors_are_a_list_before_validation():
+    field = F().a
+    assert field.errors == []
+    assert field.process_errors == []
+    field.errors.append("some error")
+    assert field.errors == ["some error"]
+
+
 def test_meta_attribute():
     # Can we pass in meta via _form?
     form = F()

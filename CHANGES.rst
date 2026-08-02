@@ -12,6 +12,9 @@ Unreleased
   :meth:`~fields.FieldList.append_entry` or
   :meth:`~fields.FieldList.insert_entry`, which now run ``post_process`` on the
   new entry.
+- :attr:`~fields.Field.errors` and ``process_errors`` are lists from the start,
+  instead of being class-level tuples until the field is validated.
+  :issue:`865`
 
 Version 3.3.0b3
 ---------------

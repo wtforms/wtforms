@@ -319,6 +319,7 @@ class Field:
 
         :param extra_filters: A sequence of extra filters to run.
         """
+        self.errors = []
         self.process_errors = []
         if data is unset_value:
             try:
