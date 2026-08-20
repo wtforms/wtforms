@@ -23,7 +23,7 @@ class DefaultMeta:
         :param options:
             A dictionary of options which are typically passed to the field.
 
-        :return: A bound field
+        :return: A bound field.
         """
         return unbound_field.bind(form=form, **options)
 
@@ -75,7 +75,7 @@ class DefaultMeta:
         """
         Build a CSRF implementation. This is called once per form instance.
 
-        The default implementation builds the class referenced to by
+        The default implementation builds the class referenced by
         :attr:`csrf_class` with zero arguments. If `csrf_class` is ``None``,
         will instead use the default implementation
         :class:`wtforms.csrf.session.SessionCSRF`.
@@ -98,7 +98,7 @@ class DefaultMeta:
 
     def get_translations(self, form):
         """
-        Override in subclasses to provide alternate translations factory.
+        Override in subclasses to provide an alternate translations factory.
         See the i18n documentation for more.
 
         :param form: The form.
