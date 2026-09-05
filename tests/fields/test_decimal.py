@@ -48,3 +48,12 @@ def test_invalid_value_message():
     form = F(DummyPostData(a=["x"]))
     assert not form.validate()
     assert form.a.errors == ["Enter a decimal number."]
+
+
+def test_invalid_value_type():
+    F = make_form(a=DecimalField())
+    form = F(DummyPostData(a={"not a": "decimal"}))
+
+    assert form.a.data is None
+    assert not form.validate()
+    assert form.a.errors == ["Not a valid decimal value."]

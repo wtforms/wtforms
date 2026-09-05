@@ -177,7 +177,7 @@ class DecimalField(LocaleAwareNumberField):
                 self.data = self._parse_decimal(valuelist[0])
             else:
                 self.data = decimal.Decimal(valuelist[0])
-        except (decimal.InvalidOperation, ValueError) as exc:
+        except (decimal.InvalidOperation, ValueError, TypeError) as exc:
             self.data = None
             raise ValueError(self.invalid_value_message) from exc
 

@@ -12,6 +12,8 @@ Unreleased
   :meth:`~fields.FieldList.append_entry` or
   :meth:`~fields.FieldList.insert_entry`, which now run ``post_process`` on the
   new entry.
+- :class:`~fields.DecimalField` catches unsupported input types instead of
+  raising a :class:`TypeError` during form processing.
 
 Version 3.3.0b3
 ---------------
