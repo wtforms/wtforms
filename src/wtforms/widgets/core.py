@@ -448,7 +448,7 @@ class Select:
         options = {"value": value, **(choice.render_kw or {}), **kwargs}
         if choice.selected:
             options["selected"] = True
-        label = escape(choice.label or choice.value)
+        label = escape(choice.value if choice.label is None else choice.label)
         return Markup(f"<option {html_params(**options)}>{label}</option>")
 
     @classmethod
@@ -482,7 +482,8 @@ class Select:
         accepts_kwargs = any(p.kind == p.VAR_KEYWORD for p in sig.parameters.values())
 
         def adapter(choice):
-            args = (choice.value, choice.label or choice.value, choice.selected)
+            label = choice.value if choice.label is None else choice.label
+            args = (choice.value, label, choice.selected)
             if accepts_kwargs:
                 return ro(*args, **(choice.render_kw or {}))
             return ro(*args)

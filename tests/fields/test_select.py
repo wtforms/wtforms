@@ -11,8 +11,10 @@ from wtforms.fields import Choice
 from wtforms.fields import enum_choices
 from wtforms.fields import enum_coerce
 from wtforms.fields import Field
+from wtforms.fields import RadioField
 from wtforms.fields import SelectChoice
 from wtforms.fields import SelectField
+from wtforms.fields import SelectMultipleField
 from wtforms.form import Form
 
 if sys.version_info >= (3, 11):
@@ -23,6 +25,46 @@ else:
 
 def make_form(name="F", **fields):
     return type(str(name), (Form,), fields)
+
+
+@pytest.mark.parametrize("field_type", [SelectField, SelectMultipleField, RadioField])
+@pytest.mark.parametrize("optgroup", [None, "Group"])
+def test_explicit_empty_choice_labels(field_type, optgroup):
+    F = make_form(
+        s=field_type(
+            choices=[
+                SelectChoice("blank", "", optgroup=optgroup),
+                SelectChoice("automatic", optgroup=optgroup),
+            ]
+        )
+    )
+    form = F(s=["blank"] if field_type is SelectMultipleField else "blank")
+    options = list(form.s)
+    assert options[0].label.text == ""
+    assert options[1].label.text == "automatic"
+    if field_type is RadioField:
+        assert '<label for="s-0"></label>' in form.s()
+    else:
+        assert '<option selected value="blank"></option>' in form.s()
+        assert '<option value="automatic">automatic</option>' in form.s()
+
+
+def test_legacy_render_option_preserves_empty_label():
+    labels = []
+
+    class LegacySelect(widgets.Select):
+        @classmethod
+        def render_option(cls, value, label, selected, **kwargs):
+            labels.append(label)
+            return super().render_option(Choice(value, label, selected, kwargs))
+
+    F = make_form(
+        s=SelectField(choices=[SelectChoice("blank", "")], widget=LegacySelect())
+    )
+    with pytest.warns(DeprecationWarning, match="pre-3.3 signature"):
+        html = F(s="blank").s()
+    assert labels == [""]
+    assert '<option selected value="blank"></option>' in html
 
 
 def test_select_field_copies_choices():

@@ -253,7 +253,7 @@ class SelectFieldBase(Field):
         for i, choice in enumerate(self._iter_choices_normalized()):
             opt = self._Option(
                 id=f"{self.id}-{i}",
-                label=choice.label or choice.value,
+                label=choice.value if choice.label is None else choice.label,
                 **opts,
             )
             opt.choice = choice

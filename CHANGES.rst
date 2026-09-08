@@ -5,6 +5,7 @@ Version 3.3.0b4
 
 Unreleased
 
+- Preserve explicitly empty labels when rendering select and radio choices.
 - :class:`~datalist.DataList` ``choices`` accepts the shorthand
   ``{value: label}`` dict syntax. :issue:`886`
 - ``choices`` callables on fields nested in a :class:`~fields.FieldList` are
